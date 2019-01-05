@@ -35,7 +35,6 @@ classdef DataAnnotationApp < handle
         markers;
         markerHandles;
         markersPlotter;
-        matchedMarkersPlotter; %Added by Smith to display matched markers
         
         %run matching algorithm - Added by Smith
         matchAnnotationsAlgo;
@@ -60,7 +59,6 @@ classdef DataAnnotationApp < handle
             obj.classesMap = ClassesMap.instance();
             obj.dataLoader = DataLoader();
             obj.markersPlotter = MarkersPlotter();
-            obj.matchedMarkersPlotter = MatchedMarkersPlotter(); %Added by Smith to display matched marker
             
             obj.eventAnnotationsPlotter = EventAnnotationsPlotter(obj.classesMap);
             obj.eventAnnotationsPlotter.delegate = obj;
@@ -240,14 +238,6 @@ classdef DataAnnotationApp < handle
             end
         end
         
-        %Added by Smith to display matched markers
-        function plotMatchedMarkers(obj)
-            
-            obj.loadMatchedMarkers();
-            obj.matchedMarkersPlotter.plotMatchedMarkers(obj.matchedSet,obj.plotAxes,obj.showingMatchedMarkers);
-            
-        end
-        
         function selectSampleAtLocation(obj,x)
             if isempty(obj.rangeSelection)
                 obj.rangeSelection = DataAnnotatorSampleRange(x);
@@ -392,6 +382,7 @@ classdef DataAnnotationApp < handle
             fileNamePath = sprintf('%s/%s',Constants.markersPath,fileName);
             obj.matchedSet = readtable(fileNamePath);
             obj.matchedSet.Properties.VariableNames = {'Class','Value'};
+            disp(obj.matchedSet);
         end
         
         function plotAnnotations(obj)
@@ -467,7 +458,6 @@ classdef DataAnnotationApp < handle
                 obj.plotData();
                 obj.plotAnnotations();
                 obj.plotMarkers();
-                obj.plotMatchedMarkers(); %Added by Smith to display matched Markers
             end
         end
         
@@ -532,7 +522,7 @@ classdef DataAnnotationApp < handle
             if (obj.showingMatchedMarkers)
                 obj.loadMatchedMarkers();
             end
-            obj.matchedMarkersPlotter.toggleMarkersVisibility(obj.showingMatchedMarkers);
+            obj.markersPlotter.toggleMarkersVisibility(obj.showingMarkers);
         end
         
         function handleSelectionChanged(obj,~,~)

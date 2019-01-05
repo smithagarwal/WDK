@@ -15,6 +15,7 @@ classdef DataAnnotationApp < handle
         %data loading
         currentFile;
         dataLoader;
+        currentMatchingAlgo; %Added by Smith to run matching algo
         
         %data
         data;
@@ -33,6 +34,9 @@ classdef DataAnnotationApp < handle
         markers;
         markerHandles;
         markersPlotter;
+        
+        %run matching algorithm - Added by Smith
+        matchAnnotationsAlgo;
         
         %ui   
         state;    
@@ -64,6 +68,10 @@ classdef DataAnnotationApp < handle
             obj.state = DataAnnotatorState.kAddMode;
                         
             obj.loadUI();
+            
+            %Added by Smith to run matching algorithm
+            obj.matchAnnotationsAlgo = MatchAnnotationsAlgo(obj.classesMap);
+            obj.currentMatchingAlgo = 1;
         end
              
         function handleAnnotationClicked(obj,source,~)
@@ -86,6 +94,8 @@ classdef DataAnnotationApp < handle
             obj.uiHandles = guihandles(DataAnnotationUI);
             
             obj.uiHandles.fileNamesList.Callback = @obj.handleSelectionChanged;
+            obj.uiHandles.matchingAlgoList.Callback = @obj.handleMatchingAlgoSelectionChanged; %Added by Smith to run matching algo
+            obj.uiHandles.runMatchingAlgoButton.Callback = @obj.handleRunMatchingAlgoClicked; %Added by Smith to run matching algo
             obj.uiHandles.loadDataButton.Callback = @obj.handleLoadDataClicked;
             obj.uiHandles.visualizeButton.Callback = @obj.handleVisualizeClicked;
             obj.uiHandles.showMarkersCheckBox.Callback = @obj.handleShowMarkersToggled;
@@ -99,6 +109,7 @@ classdef DataAnnotationApp < handle
             obj.loadPlotAxes();
             obj.setUserClickHandle();
             obj.populateFileNamesList();
+            obj.populateMatchingAlgoNamesList(); %Added by Smith to run Matching Algo
             obj.populateClassesList();
             
             obj.preprocessingConfigurator = PreprocessingConfigurator(...
@@ -125,6 +136,12 @@ classdef DataAnnotationApp < handle
             extensions = {'*.mat','*.txt'};
             files = Helper.listDataFiles(extensions);
             obj.uiHandles.fileNamesList.String = files;
+        end
+        
+        %Added by Smith to run matching Algo
+        function populateMatchingAlgoNamesList(obj)
+            algo = regexp(fileread('./data/matchingalgo.txt'), '\r\n|\r|\n', 'split');
+            obj.uiHandles.matchingAlgoList.String = algo;
         end
         
         function loadPlotAxes(obj)
@@ -306,6 +323,11 @@ classdef DataAnnotationApp < handle
             obj.currentFile = obj.uiHandles.fileNamesList.Value;
         end
         
+        %Added by Smith to run matching Algorithm
+        function updateMatchingAlgoName(obj)
+            obj.currentMatchingAlgo = obj.uiHandles.matchingAlgoList.Value;
+        end
+        
         function markersFileName = getMarkersFileName(obj)
             fileName = obj.getCurrentFileNameNoExtension();
             markersFileName = sprintf('%s-markers.edl',fileName);
@@ -318,6 +340,11 @@ classdef DataAnnotationApp < handle
         
         function fileName = getDataFileName(obj)
             fileName = obj.uiHandles.fileNamesList.String{obj.currentFile};
+        end
+        
+        %Added by Smith to run Matching Algo
+        function algoName = getMatchingAlgoName(obj)
+            algoName = obj.uiHandles.matchingAlgoList.String{obj.currentMatchingAlgo};
         end
         
         function fileName = getCurrentFileNameNoExtension(obj)
@@ -473,6 +500,16 @@ classdef DataAnnotationApp < handle
         
         function handleSelectionChanged(obj,~,~)
             obj.updateFileName();
+        end
+        
+        %Added by Smith to run Matching Algorithm
+        function handleMatchingAlgoSelectionChanged(obj,~,~)
+            obj.updateMatchingAlgoName();
+        end
+        
+         %Added by Smith to run Matching Algorithm
+        function handleRunMatchingAlgoClicked(obj,~,~)
+            obj.matchAnnotationsAlgo.runMatchAnnotationsAlgo(obj.getMatchingAlgoName);
         end
         
         function handleAddRangeClicked(obj,~,~)

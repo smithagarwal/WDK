@@ -22,7 +22,7 @@ function varargout = DataAnnotationUI(varargin)
 
 % Edit the above text to modify the response to help DataAnnotationUI
 
-% Last Modified by GUIDE v2.5 22-Nov-2018 11:14:44
+% Last Modified by GUIDE v2.5 04-Jan-2019 16:48:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -261,3 +261,33 @@ function myCheckbox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of myCheckbox
+
+
+% --- Executes on selection change in matchingAlgoList.
+function matchingAlgoList_Callback(hObject, eventdata, handles)
+% hObject    handle to matchingAlgoList (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns matchingAlgoList contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from matchingAlgoList
+
+
+% --- Executes during object creation, after setting all properties.
+function matchingAlgoList_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to matchingAlgoList (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in runMatchingAlgoButton.
+function runMatchingAlgoButton_Callback(hObject, eventdata, handles)
+% hObject    handle to runMatchingAlgoButton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

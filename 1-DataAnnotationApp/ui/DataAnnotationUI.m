@@ -22,7 +22,7 @@ function varargout = DataAnnotationUI(varargin)
 
 % Edit the above text to modify the response to help DataAnnotationUI
 
-% Last Modified by GUIDE v2.5 05-Jan-2019 08:25:09
+% Last Modified by GUIDE v2.5 05-Jan-2019 15:03:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -300,3 +300,12 @@ function showMatchedMarkersCheckBox_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of showMatchedMarkersCheckBox
+
+
+% --- Executes on button press in debugMatchedMarkers.
+function debugMatchedMarkers_Callback(hObject, eventdata, handles)
+% hObject    handle to debugMatchedMarkers (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of debugMatchedMarkers

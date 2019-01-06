@@ -7,8 +7,8 @@ classdef MatchedMarkersPlotter < handle
     
     methods (Access = public)
         
-        function plotMatchedMarkers(obj, markers_dt, plotAxes, visible)
-            if nargin == 3
+        function plotMatchedMarkers(obj, markers_dt, plotAxes, visible,debug)
+            if (visible)
                 visible = true;
             end
             
@@ -20,7 +20,12 @@ classdef MatchedMarkersPlotter < handle
             for i=1:nrow
                 markers(i).sample = markers_dt.Value(i);
                 markers(i).text = markers_dt.Class{i};
-                markers(i).label = 4;
+                if (debug)
+                    markers(i).label = markers_dt.Debug{i};
+                else
+                    markers(i).label = "black";
+                end
+                
             end
             
             nMarkers = length(markers);
@@ -30,15 +35,17 @@ classdef MatchedMarkersPlotter < handle
             
             for i = 1 : length(markers)
                 marker = markers(i);
-                color = obj.markerColors(marker.label);
-                lineWidth = obj.markerLineWidths(marker.label);
+%                 color = obj.markerColors(marker.label);
+                color = marker.label;
+%                 lineWidth = obj.markerLineWidths(marker.label);
+                lineWidth = 1;
                 
                 markerHandle = DataAnnotatorMarkerHandle();
                 
                 markerHandle.lineHandle = line(plotAxes,[marker.sample, marker.sample],...
                     [markerHeights(1) markerHeights(2)],...
-                    'Color',color{1},'LineWidth',lineWidth,...
-                    'LineStyle','--','Visible',visibleStr);
+                    'Color',color,'LineWidth',lineWidth,...
+                    'LineStyle','-','Visible',visibleStr);
                 
                 if ~isempty(marker.text)
                     textHandle = text(plotAxes,double(marker.sample-15),...

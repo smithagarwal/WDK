@@ -52,6 +52,7 @@ classdef DataAnnotationApp < handle
         isSelectingPeaks = 0;
         showingMarkers = 1;
         showingMatchedMarkers = 1; %Added by Smith to display matched markers
+        debuggingMatchedMarkers = 1; %Added by Smith to debug matched markers
     end
     
     methods (Access = public)
@@ -76,6 +77,7 @@ classdef DataAnnotationApp < handle
             %Added by Smith to run matching algorithm
             obj.matchAnnotationsAlgo = MatchAnnotationsAlgo(obj.classesMap);
             obj.currentMatchingAlgo = 1;
+            
         end
              
         function handleAnnotationClicked(obj,source,~)
@@ -104,6 +106,7 @@ classdef DataAnnotationApp < handle
             obj.uiHandles.visualizeButton.Callback = @obj.handleVisualizeClicked;
             obj.uiHandles.showMarkersCheckBox.Callback = @obj.handleShowMarkersToggled;
             obj.uiHandles.showMatchedMarkersCheckBox.Callback = @obj.handleShowMatchedMarkersToggled; %Added by Smith to display matched markers
+            obj.uiHandles.debugMatchedMarkers.Callback = @obj.handleDebugMatchedMarkersToggled; %Added by Smith to debug matched markers
             obj.uiHandles.stateButtonGroup.SelectionChangedFcn = @obj.handleStateChanged;
             obj.uiHandles.findButton.Callback = @obj.handleFindPeaksClicked;
             obj.uiHandles.saveButton.Callback = @obj.handleSaveClicked;
@@ -244,8 +247,38 @@ classdef DataAnnotationApp < handle
         function plotMatchedMarkers(obj)
             
             obj.loadMatchedMarkers();
-            obj.matchedMarkersPlotter.plotMatchedMarkers(obj.matchedSet,obj.plotAxes,obj.showingMatchedMarkers);
+            obj.compareMatchedMarkers(); %Added by Smith to debug matched Markers
+            obj.matchedMarkersPlotter.plotMatchedMarkers(obj.matchedSet,obj.plotAxes,obj.showingMatchedMarkers,obj.debuggingMatchedMarkers);
             
+        end
+        
+        %Added by Smith to debug Matched Markers
+        function compareMatchedMarkers(obj)
+            
+            obj.matchedSet.Debug = strings(height(obj.matchedSet),1);
+            for i=1:size(obj.matchedSet,1)
+                imatched_class = char(obj.matchedSet{i,1});
+                imatched_value = obj.matchedSet{i,2};
+                if imatched_class ~= "unmatched"
+                    found_flag = 0;
+                    for j=1:length(obj.annotationSet.eventAnnotations)
+                        if obj.annotationSet.eventAnnotations(j).sample == imatched_value
+                            found_flag = 1;
+                            if obj.annotationSet.eventAnnotations(j).label == obj.classesMap.idxOfClassWithString(imatched_class)
+                                obj.matchedSet{i,3} = "green";
+                            else
+                                obj.matchedSet{i,3} = "red";
+                            end
+                            break;
+                        end
+                    end
+                    if ~(found_flag)
+                        obj.matchedSet{i,3} = "yellow";
+                    end
+                else
+                      obj.matchedSet{i,3} = "blue";
+                end
+            end
         end
         
         function selectSampleAtLocation(obj,x)
@@ -533,6 +566,11 @@ classdef DataAnnotationApp < handle
                 obj.loadMatchedMarkers();
             end
             obj.matchedMarkersPlotter.toggleMarkersVisibility(obj.showingMatchedMarkers);
+        end
+        
+        %Added by Smith to debug matched markers
+        function handleDebugMatchedMarkersToggled(obj,~,~)
+            obj.debuggingMatchedMarkers = ~obj.debuggingMatchedMarkers;
         end
         
         function handleSelectionChanged(obj,~,~)

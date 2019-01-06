@@ -7,8 +7,8 @@ classdef MatchedMarkersPlotter < handle
     
     methods (Access = public)
         
-        function plotMatchedMarkers(obj, markers_dt, plotAxes, visible)
-            if nargin == 3
+        function plotMatchedMarkers(obj, markers_dt, plotAxes, visible,debug)
+            if (visible)
                 visible = true;
             end
             
@@ -16,10 +16,16 @@ classdef MatchedMarkersPlotter < handle
             
             nrow = height(markers_dt);
             markers(1,nrow) = VideoMarker();
-            disp(nrow);
+            
             for i=1:nrow
                 markers(i).sample = markers_dt.Value(i);
                 markers(i).text = markers_dt.Class{i};
+                if (debug)
+                    markers(i).label = markers_dt.Debug{i};
+                else
+                    markers(i).label = "blue";
+                end
+                
             end
             
             nMarkers = length(markers);
@@ -29,7 +35,8 @@ classdef MatchedMarkersPlotter < handle
             
             for i = 1 : length(markers)
                 marker = markers(i);
-                color = obj.markerColors(marker.label);
+%                 color = obj.markerColors(marker.label);
+                color = 
                 lineWidth = obj.markerLineWidths(marker.label);
                 
                 markerHandle = DataAnnotatorMarkerHandle();

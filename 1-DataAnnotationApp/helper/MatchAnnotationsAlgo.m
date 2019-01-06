@@ -12,7 +12,7 @@ classdef MatchAnnotationsAlgo < handle
     end
     
     properties (Access = private,Constant)
-        tolerance = 100;
+        tolerance = 400;
     end
     
     methods (Access = public)
@@ -44,7 +44,7 @@ classdef MatchAnnotationsAlgo < handle
         function runMatchAnnotationsAlgo(obj,algoName)
             if isequal(algoName,"StringMatching") 
                 obj.runStringMatchingAlgo(algoName);
-            elseif isequal(algoName,"GraphPairMatching") 
+            elseif isequal(algoName,"NearestNeighbour") 
                 obj.runGraphPairMatchingAlgo(algoName);
             else
                 disp("NULL")
@@ -76,10 +76,21 @@ classdef MatchAnnotationsAlgo < handle
         end
         
         function runGraphPairMatchingAlgo(obj,algoName)
-%           fid = fopen(strcat('./data/markers/',algoName,'_data.txt'),'wt');
-%             
-%           fclose(fid);
-            disp("Still in Working");
+            diff_mat = abs(obj.app_marker.Interpolated_Value - obj.detected_peaks.Value');
+            
+            fid = fopen(strcat('./data/markers/',algoName,'_data.txt'),'wt');
+            [ni,nj] = size(diff_mat);
+            
+            jcount=1;
+            for i=1:ni
+                [minV,minI] = min(diff_mat(i,jcount:nj),[],2);
+                if jcount <= size(obj.detected_peaks,1)
+                    fprintf(fid,'%s, %.0f\n',obj.app_marker.Class{i},obj.detected_peaks.Value(jcount + minI - 1));
+                end
+                jcount = jcount + minI;
+            end
+            fclose(fid);
+            msgbox(strcat('File Generated for algo: ',algoName),'Success');
         end
             
         

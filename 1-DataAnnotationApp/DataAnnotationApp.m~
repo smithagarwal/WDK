@@ -283,13 +283,12 @@ classdef DataAnnotationApp < handle
         end
         
         %Added by Smith to gather matched Markers statistics
+        
         function gatherMatchedMarkersStatistics(obj,debugMode)
             if(debugMode)
+                Agg_table=mat2dataset(tabulate(obj.matchedSet.Debug),'VarNames',{'TrafficLight','nrows','Perc'});
                 f = figure;
-                uit = uitable(f,'Data',tabulate(obj.matchedSet.Debug),'Position',[20 100 260 200]);
-                uit.ColumnName = {'Color','Count','Percentage'};
-                uit.FontSize = 15;
-                uit.RowStriping = 'on';
+                uit = uitable(f,'Data',,'Position',[20 100 260 200]);
             end
         end
         

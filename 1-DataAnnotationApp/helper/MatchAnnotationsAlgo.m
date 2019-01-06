@@ -72,6 +72,7 @@ classdef MatchAnnotationsAlgo < handle
                 end
             end
             fclose(fid);
+            msgbox(strcat('File Generated for algo: ',algoName),'Success');
         end
         
         function runGraphPairMatchingAlgo(obj,algoName)

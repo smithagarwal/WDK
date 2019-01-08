@@ -12,7 +12,7 @@ classdef MatchAnnotationsAlgo < handle
     end
     
     properties (Access = private,Constant)
-        tolerance = 400;
+        tolerance = 250;
     end
     
     methods (Access = public)
@@ -68,7 +68,7 @@ classdef MatchAnnotationsAlgo < handle
                     end
                 end
                 if imatched_flag == 0 && jcount <= size(obj.detected_peaks,1)
-                    fprintf(fid,'%s, %.0f\n',"unmatched",round(obj.app_marker.Interpolated_Value(i)));
+                    fprintf(fid,'%s, %.0f\n',strcat(obj.app_marker.Class{i},"-u"),round(obj.app_marker.Interpolated_Value(i)));
                 end
             end
             fclose(fid);

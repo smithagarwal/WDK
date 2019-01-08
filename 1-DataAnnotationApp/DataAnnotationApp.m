@@ -260,7 +260,7 @@ classdef DataAnnotationApp < handle
             for i=1:size(obj.matchedSet,1)
                 imatched_class = char(obj.matchedSet{i,1});
                 imatched_value = obj.matchedSet{i,2};
-                if imatched_class ~= "unmatched"
+                if ~contains(imatched_class, "-u")
                     found_flag = 0;
                     for j=1:length(obj.annotationSet.eventAnnotations)
                         if obj.annotationSet.eventAnnotations(j).sample == imatched_value
